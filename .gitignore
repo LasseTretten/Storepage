@@ -4,4 +4,4 @@
 *.pyc
 **/__pycache__/
 bundle.js
-/.env
+store/.env
