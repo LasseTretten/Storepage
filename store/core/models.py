@@ -1,14 +1,35 @@
 from django.db import models
 from django.utils.translation import gettext_lazy
 from .validators import validate_nobb
+from mptt.models import MPTTModel, TreeForeignKey
 
 
-class Category(models.Model):
+class Category(MPTTModel):
     """Category model. Will be related to the Commodity model"""
     name = models.CharField(max_length=50)
+    slug = models.SlugField(unique=True)
+    description = models.Textfield(blank=True, null=True)
+
+    category = models.TreeForeignKey(
+        'self',
+        blank=True,
+        null=True,
+        related_name='child',
+        on_delete=models.CASCADE
+    )
+
+    class Meta:
+        unique_together = ('slug', 'parent')
+        verbose_name_plural = 'categories'
 
     def __str__(self):
-        return self.name
+        full_path = [self]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.name)
+            k = k.parent
+
+        return ' -> '.join(full_path[::-1])
 
 
 class Manufacturer(models.Model):
@@ -26,6 +47,19 @@ class Product(models.Model):
     brand = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
     nobb = models.IntegerField(
         default=0, blank=True, validators=[validate_nobb])
+
+    category = models.ForeignKey(
+        'Category',
+        related_name='products',
+        on_delete=models.CASCADE
+    )
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super(Product, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return self.slug
 
     def __str__(self):
         return self.name
