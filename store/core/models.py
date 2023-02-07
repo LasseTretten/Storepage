@@ -4,6 +4,7 @@ from .validators import validate_nobb
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.text import slugify
 
+
 class Category(MPTTModel):
     """Category model. Will be related to the Commodity model"""
     name = models.CharField(max_length=50)
@@ -62,7 +63,7 @@ class Product(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
+        self.slug = slugify(self.name)
         super(Product, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -76,7 +77,8 @@ class Commodity(models.Model):
     """Model representing a product in a sales setting.
     This shall not be product spessific data"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.RESTRICT, null=True)
+    category = models.ForeignKey(
+        Category, on_delete=models.RESTRICT, null=True)
     name = models.CharField(max_length=100)
     price = models.FloatField()
     in_stock = models.IntegerField()
