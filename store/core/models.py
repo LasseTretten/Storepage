@@ -55,11 +55,11 @@ class Product(models.Model):
     nobb = models.IntegerField(
         default=0, blank=True, validators=[validate_nobb])
 
-    category = models.ForeignKey(
-        'Category',
-        related_name='products',
-        on_delete=models.CASCADE
-    )
+    # category = models.ForeignKey(
+    #     'Category',
+    #     related_name='products',
+    #     on_delete=models.CASCADE
+    # )
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
@@ -76,7 +76,14 @@ class Commodity(models.Model):
     """Model representing a product in a sales setting.
     This shall not be product spessific data"""
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.RESTRICT, null=True)
+    category = models.ForeignKey(
+        'Category',
+        related_name='products',
+        on_delete=models.CASCADE,
+        null=True
+    )
+
+
     name = models.CharField(max_length=100)
     price = models.FloatField()
     in_stock = models.IntegerField()
