@@ -2,15 +2,15 @@ from django.db import models
 from django.utils.translation import gettext_lazy
 from .validators import validate_nobb
 from mptt.models import MPTTModel, TreeForeignKey
-
+from django.utils.text import slugify
 
 class Category(MPTTModel):
     """Category model. Will be related to the Commodity model"""
     name = models.CharField(max_length=50)
     slug = models.SlugField(unique=True)
-    description = models.Textfield(blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
 
-    category = models.TreeForeignKey(
+    parent = TreeForeignKey(
         'self',
         blank=True,
         null=True,
@@ -22,8 +22,15 @@ class Category(MPTTModel):
         unique_together = ('slug', 'parent')
         verbose_name_plural = 'categories'
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super(Category, self).save(*args, **kwargs)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
+
     def __str__(self):
-        full_path = [self]
+        full_path = [self.name]
         k = self.parent
         while k is not None:
             full_path.append(k.name)

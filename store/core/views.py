@@ -17,4 +17,14 @@ def index(request):
             'products': products,
         }
 
+<<<<<<< HEAD
     return render(request, 'your_site/index.html', context)
+=======
+    return render(request, 'index.html', context)
+
+
+def show_categories(request):
+    return render(request,
+                  "categories.html",
+                  {'categories': Category.objects.all()})
+>>>>>>> f327a02 (Added support for categories.)
