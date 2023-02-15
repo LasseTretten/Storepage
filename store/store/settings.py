@@ -34,8 +34,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core',
     'mptt',
-    'core'
 ]
 
 MIDDLEWARE = [
@@ -78,7 +78,7 @@ if DEBUG:
 else:
     DATABASES = {
         'default': env.db()
-}
+    }
 
 AUTH_PASSWORD_VALIDATORS = [
     {
