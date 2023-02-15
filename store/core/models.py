@@ -9,7 +9,7 @@ class Category(MPTTModel):
     """Category model. Will be related to the Commodity model"""
     name = models.CharField(max_length=50)
     description = models.TextField(blank=True, null=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     parent = TreeForeignKey(
         'self',
@@ -24,14 +24,17 @@ class Category(MPTTModel):
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
-    def str(self):
-        full_path = [self.name]
-        k = self.parent
-        while k is not None:
-            full_path.append(k.name)
-            k = k.parent
+    # def str(self):
+    #     full_path = [self.name]
+    #     k = self.parent
+    #     while k is not None:
+    #         full_path.append(k.name)
+    #         k = k.parent
 
-        return ' -> '.join(full_path[::-1])
+    #     return ' -> '.join(full_path[::-1])
+
+    def __str__(self):
+        return self.name
 
     class MPTTMeta:
         order_insertion_by = ['name']
