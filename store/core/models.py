@@ -1,15 +1,15 @@
 from django.db import models
-from django.utils.translation import gettext_lazy
 from .validators import validate_nobb
 from mptt.models import MPTTModel, TreeForeignKey
 from django.utils.text import slugify
+from django.urls import reverse
 
 
 class Category(MPTTModel):
     """Category model. Will be related to the Commodity model"""
     name = models.CharField(max_length=50)
-    slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
+    slug = models.SlugField(unique=True)
 
     parent = TreeForeignKey(
         'self',
@@ -19,18 +19,12 @@ class Category(MPTTModel):
         on_delete=models.CASCADE
     )
 
-    class Meta:
-        unique_together = ('slug', 'parent')
-        verbose_name_plural = 'categories'
-
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Category, self).save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
 
-    class MPTTMeta:
-        order_insertion_by = ['name']
-
-    def __str__(self):
+    def str(self):
         full_path = [self.name]
         k = self.parent
         while k is not None:
@@ -38,6 +32,9 @@ class Category(MPTTModel):
             k = k.parent
 
         return ' -> '.join(full_path[::-1])
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
 
 class Manufacturer(models.Model):
@@ -52,46 +49,63 @@ class Manufacturer(models.Model):
 class Product(models.Model):
     """Model representing data assosiated with a spessific product."""
     name = models.CharField(max_length=100)
-    brand = models.ForeignKey(Manufacturer, on_delete=models.CASCADE)
+
+    manufacturer = models.ForeignKey(
+        "Manufacturer",
+        on_delete=models.CASCADE,
+        related_name="products"
+    )
+
     nobb = models.IntegerField(
         default=0, blank=True, validators=[validate_nobb])
-
-    # category = models.ForeignKey(
-    #     'Category',
-    #     related_name='products',
-    #     on_delete=models.CASCADE
-    # )
+    slug = models.SlugField(unique=True)
 
     def save(self, *args, **kwargs):
-        self.slug = slugify(self.name)
-        super(Product, self).save(*args, **kwargs)
+        if not self.slug:
+            self.slug = slugify(self.slug)
+        return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return self.slug
+        return reverse("product_detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.name
 
 
 class Commodity(models.Model):
-    """Model representing a product in a sales setting.
-    This shall not be product spessific data"""
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    """Model representing a product in a sales setting. This shall not be product spessific data.
+    There might be scenarios were we want to sell the same product, but at different prices, e.g. outlets items.
+    """
+    name = models.CharField(max_length=100)
+
+    product = models.ForeignKey(
+        "Product",
+        related_name="commodities",
+        on_delete=models.CASCADE
+    )
+
     category = models.ForeignKey(
         'Category',
-        related_name='products',
+        related_name='commodities',
         on_delete=models.CASCADE,
         null=True
     )
 
-
-    name = models.CharField(max_length=100)
     price = models.FloatField()
     in_stock = models.IntegerField()
     # Planed outgoing orders for this item.
     order_out = models.IntegerField(default=0)
     # Send out an warning if the stock comes under this value.
     treshold = models.IntegerField(default=0, blank=True)
+    slug = models.SlugField(unique=True)
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        return super().save(*args, **kwargs)
+
+    def get_absolute_url(self, *args, **kwargs):
+        return reverse("commodity_detail", kwargs={"slug": self.slug})
 
     def __str__(self):
         return self.name

@@ -1,7 +1,9 @@
-/.venv/
+.venv/
 **/node_modules/
-.vscode/
+**/.vscode/
 *.pyc
 **/__pycache__/
 bundle.js
 store/.env
+**/migrations/
+*.sqlite3
