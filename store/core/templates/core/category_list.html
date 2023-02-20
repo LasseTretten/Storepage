@@ -6,12 +6,7 @@
         <ul>
             {% recursetree categories %}
                 <li>
-                    {{ node.name }}
-                    {% if not node.is_leaf_node %}
-                        <ul class="children">
-                            {{ children }}
-                        </ul>
-                    {% endif %}
+                    <a href="{{node.get_absolute_url}}"> {{node.name}}</a>
                 </li>
             {% endrecursetree %}
         </ul>

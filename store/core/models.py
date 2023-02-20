@@ -24,14 +24,17 @@ class Category(MPTTModel):
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
-    # def str(self):
-    #     full_path = [self.name]
-    #     k = self.parent
-    #     while k is not None:
-    #         full_path.append(k.name)
-    #         k = k.parent
+    def make_path(self):
+        full_path = [self.slug]
+        k = self.parent
+        while k is not None:
+            full_path.append(k.slug)
+            k = k.parent
 
-    #     return ' -> '.join(full_path[::-1])
+        return '/'.join(full_path[::-1])
+
+    def get_absolute_url(self):
+        return reverse("categoryList", kwargs={"path": self.make_path()})
 
     def __str__(self):
         return self.name
