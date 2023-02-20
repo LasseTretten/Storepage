@@ -61,11 +61,11 @@ class Product(models.Model):
 
     nobb = models.IntegerField(
         default=0, blank=True, validators=[validate_nobb])
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.slug:
-            self.slug = slugify(self.slug)
+            self.slug = slugify(self.name)
         return super().save(*args, **kwargs)
 
     def get_absolute_url(self):
@@ -79,7 +79,7 @@ class Commodity(models.Model):
     """Model representing a product in a sales setting. This shall not be product spessific data.
     There might be scenarios were we want to sell the same product, but at different prices, e.g. outlets items.
     """
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=True)
 
     product = models.ForeignKey(
         "Product",
@@ -100,9 +100,11 @@ class Commodity(models.Model):
     order_out = models.IntegerField(default=0)
     # Send out an warning if the stock comes under this value.
     treshold = models.IntegerField(default=0, blank=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(unique=True, blank=True)
 
     def save(self, *args, **kwargs):
+        if not self.name:
+            self.name = self.product.name
         if not self.slug:
             self.slug = slugify(self.name)
         return super().save(*args, **kwargs)

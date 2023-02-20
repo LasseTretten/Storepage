@@ -2,14 +2,18 @@
 {% load mptt_tags %}
 
 {% block content %}
-    <h1>Liste med byggevarer</h1>
-    {% recuresetree categories %}
-    <li>
-        {{ node.name }}
-        {% if not node.is_leaf_node %}
-        <ul class="children">
-            {{children}}
+    <div>
+        <ul>
+            {% recursetree categories %}
+                <li>
+                    {{ node.name }}
+                    {% if not node.is_leaf_node %}
+                        <ul class="children">
+                            {{ children }}
+                        </ul>
+                    {% endif %}
+                </li>
+            {% endrecursetree %}
         </ul>
-    </li>
-    {% endrecursetree %}
+    </div>
 {% endblock %}
