@@ -7,7 +7,7 @@ def index(request):
     return render(request, 'core/index.html', {})
 
 
-def CategoryList(request):
+def categoryList(request):
     categories = get_list_or_404(Category)
 
     template = 'core/category_list.html'
