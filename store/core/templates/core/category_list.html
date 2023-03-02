@@ -4,11 +4,11 @@
 {% block content %}
     <div>
         <ul>
-            {% recursetree categories %}
+            {% for category in categories %}
                 <li>
-                    <a href="{{node.get_absolute_url}}"> {{node.name}}</a>
+                    <a href="{{category.get_absolute_url}}"> {{category.name}}</a>
                 </li>
-            {% endrecursetree %}
+            {% endfor %}
         </ul>
     </div>
 {% endblock %}
