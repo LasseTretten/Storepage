@@ -3,11 +3,12 @@ from core.models import Category
 from django.shortcuts import get_list_or_404
 from django.shortcuts import get_object_or_404
 
+
 def index(request):
     return render(request, 'core/index.html', {})
 
 
-def CategoryList(request, path):
+def categoryList(request, path):
 
     category_path = path.split('/')
     if category_path[-1] == '':
@@ -21,6 +22,6 @@ def CategoryList(request, path):
     print(categories)
 
     template = 'core/category_list.html'
-    context = {'categories': categories , 'path': path}
+    context = {'categories': categories, 'path': path}
 
     return render(request, template, context)
