@@ -2,5 +2,9 @@
 
 
 {% block content %}
+<<<<<<< HEAD
+    <h1 id="message"> Lasse </h1>
+=======
     <h1 id="message"> Index page </h1>
+>>>>>>> lasse
 {% endblock %}

@@ -1,10 +1,17 @@
 from django.urls import path
+<<<<<<< HEAD
+from core.views import index, CategoryListView
+=======
 from django.contrib.auth import views as auth_view
 from core.views import index, categoryList
+>>>>>>> lasse
 
 
 urlpatterns = [
     path('', index, name='index'),
+<<<<<<< HEAD
+    path('categories', CategoryListView.as_view(), name='categories'),
+=======
 
     path('accounts/login/', auth_view.LoginView.as_view(
         template_name='core/registration/login.html'), name='login'),
@@ -27,4 +34,5 @@ urlpatterns = [
 
 
     path('<path:path>', categoryList, name='categoryList'),
+>>>>>>> lasse
 ]

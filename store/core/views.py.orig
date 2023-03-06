@@ -1,18 +1,21 @@
 from django.shortcuts import render
 from core.models import Category
+<<<<<<< HEAD
+from django.views import generic
+=======
 from django.shortcuts import get_list_or_404
 from django.shortcuts import get_object_or_404
+>>>>>>> lasse
 
 
 def index(request):
-    if request.method == 'GET':
-        category_id = int(request.GET.get('category_id', default=1))
-        current_category = Category.objects.get(pk=category_id)
+    return render(request, 'core/index.html', {})
 
-        children = current_category.get_children()
-        ancestors = current_category.get_ancestors()
-        products = current_category.products.all()
 
+<<<<<<< HEAD
+class CategoryListView(generic.ListView):
+    model = Category
+=======
 def categoryList(request, path):
 
     category_path = path.split('/')
@@ -30,3 +33,4 @@ def categoryList(request, path):
     context = {'categories': categories, 'path': path}
 
     return render(request, template, context)
+>>>>>>> lasse

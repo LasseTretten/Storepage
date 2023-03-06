@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load mptt_tags %}
+
+{% block content %}
+<<<<<<< HEAD
+    <h1>Liste med byggevarer</h1>
+    {% recuresetree categories %}
+    <li>
+        {{ node.name }}
+        {% if not node.is_leaf_node %}
+        <ul class="children">
+            {{children}}
+        </ul>
+    </li>
+    {% endrecursetree %}
+=======
+    <div>
+        <ul>
+            {% for category in categories %}
+                <li>
+                    <a href="{{category.get_absolute_url}}"> {{category.name}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+>>>>>>> lasse
+{% endblock %}
