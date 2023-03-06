@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_view
-from core.views import index, categoryList
+from core.views import index, register_user, categoryList
 
 
 urlpatterns = [
@@ -23,6 +23,8 @@ urlpatterns = [
 
     path('accounts/password_reset_complete/', auth_view.PasswordResetCompleteView.as_view(
         template_name='core/registration/password_reset_complete.html'), name='password_reset_complete'),
+
+    path('accounts/register_user/', register_user, name='register_user'),
 
 
 

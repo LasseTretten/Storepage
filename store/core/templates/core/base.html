@@ -24,6 +24,9 @@
           <li><a href="{% url 'login' %}?next={{ request.path }}">Login</a></li>
         </nav>
       {% endif %}
+      <nav>
+        <li><a href="{% url 'index' %}">Hjem</a></li>
+      </nav>
     </div>
   {% block content %} 
   {% endblock %}
