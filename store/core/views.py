@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from core.models import Category
-from django.shortcuts import get_list_or_404
-from django.shortcuts import get_object_or_404
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -28,5 +29,24 @@ def categoryList(request, path):
 
     template = 'core/category_list.html'
     context = {'categories': categories, 'path': path}
+
+    return render(request, template, context)
+
+
+def register_user(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user_username = form.cleaned_data['username']
+            user_password = form.cleaned_data['password1']
+            user = authenticate(username=user_username, password=user_password)
+            login(request, user)
+            return redirect('index')
+    else:
+        form = UserCreationForm()
+
+    template = "core/registration/register_user.html"
+    context = {'form': form}
 
     return render(request, template, context)
